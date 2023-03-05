@@ -23,6 +23,6 @@ func main() {
 
 	api := router.Group("/api")
 	api.GET("/show", controllers.TradeShowByRecent)
-	router.Run(":4000")
+	router.Run(":4040")
 
 }

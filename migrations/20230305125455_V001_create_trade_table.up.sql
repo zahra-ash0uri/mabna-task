@@ -1,5 +1,3 @@
-
-
 CREATE TABLE Instrument (
     Id SERIAL PRIMARY KEY,
     Name VARCHAR(255) NOT NULL
