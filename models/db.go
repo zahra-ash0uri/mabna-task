@@ -8,11 +8,14 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 )
 
-func ConnectToPostgres() (*pgx.Conn, error) {
+var Connection *pgxpool.Pool
+var err error
+
+func ConnectToPostgres() (*pgxpool.Pool, error) {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		fmt.Println("Error getting caller information")
@@ -33,10 +36,12 @@ func ConnectToPostgres() (*pgx.Conn, error) {
 
 	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", user, password, host, port, database)
 
-	conn, err := pgx.Connect(context.Background(), connectionString)
-	// if conn == nil:
-	// 	return nil, err
+	Connection, err := pgxpool.Connect(context.Background(), connectionString)
+	if err != nil {
+		return nil, err
+	}
+	defer Connection.Close()
 
-	return conn, err
+	return Connection, nil
 
 }
