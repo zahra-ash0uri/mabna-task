@@ -12,7 +12,11 @@ import (
 func TradeShowByRecent(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
-	rows, err := models.Connection.Query(context.Background(), "SELECT i.Name, t.DateEn FROM trade t join on instrument i where t.InstrumentID = i.Id GROUPBY I.NAME ORDER BY t.DateEn;")
+	db := models.GetDB()
+
+	// query := "SELECT i.Name, t.DateEn FROM trade t join on instrument i where t.InstrumentID = i.Id GROUPBY I.NAME ORDER BY t.DateEn;"
+	query := "SELECT * FROM trade;"
+	rows, err := db.Conn.Query(context.Background(), query)
 	if err != nil {
 		log.Fatal("error while executing query")
 	}

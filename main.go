@@ -12,12 +12,6 @@ import (
 func main() {
 	fmt.Printf("Started at : %3v \n", time.Now())
 
-	conn, err := models.ConnectToPostgres()
-	if err != nil {
-		fmt.Println("Can not connect to database...")
-		return
-	}
-	fmt.Println(conn)
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
@@ -25,4 +19,5 @@ func main() {
 	api.GET("/show", controllers.TradeShowByRecent)
 	router.Run(":4040")
 
+	defer models.GetDB().Conn.Close()
 }

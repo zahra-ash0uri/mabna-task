@@ -12,10 +12,24 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var Connection *pgxpool.Pool
-var err error
+type pgConn struct {
+	Conn *pgxpool.Pool
+}
 
-func ConnectToPostgres() (*pgxpool.Pool, error) {
+var db *pgConn
+
+func New() *pgConn {
+	if db == nil {
+		dbcon, err := connectToPostgres()
+		if err != nil {
+			panic(err)
+		}
+		db = &pgConn{Conn: dbcon}
+	}
+	return db
+}
+
+func connectToPostgres() (*pgxpool.Pool, error) {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		fmt.Println("Error getting caller information")
@@ -40,7 +54,6 @@ func ConnectToPostgres() (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer Connection.Close()
 
 	return Connection, nil
 
